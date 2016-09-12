@@ -1,0 +1,30 @@
+{"frames": {
+
+"ship.png":
+{
+	"frame": {"x":0,"y":0,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":70},
+	"sourceSize": {"w":70,"h":70},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"ship_thrust.png":
+{
+	"frame": {"x":70,"y":0,"w":70,"h":70},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":70,"h":70},
+	"sourceSize": {"w":70,"h":70},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "ship_spritesheet.png",
+	"format": "RGBA8888",
+	"size": {"w":140,"h":70},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4f6e0d29148623c5d4062b6d8f3ffe9b:ceb4b28b0fa612c7bb0c472a92cc7653:0ee84c4aead597449c41b07794524344$"
+}
+}
