@@ -1,6 +1,9 @@
 // Bullet Object
 function Bullet(state)
 {
+    // Set View
+    var view = state.camera.view;
+
     this.vx = 0;
     this.vy = 0;
     this.circle;
@@ -19,7 +22,9 @@ function Bullet(state)
         this.circle.endFill();
         this.circle.x = state.ship.sprite.x;
         this.circle.y = state.ship.sprite.y;
-        state.container.addChild(this.circle);
+
+        // Make visible
+        view.addChild(this.circle);
 
         // Set Velocity
         this.vx = state.ship.vx + speed*Math.cos(state.ship.sprite.rotation);
@@ -40,7 +45,7 @@ function Bullet(state)
     this.cleanup = function()
     {
         // Destroy Graphics
-        state.container.removeChild(this.circle);
+        view.removeChild(this.circle);
     }
 
     this.init();

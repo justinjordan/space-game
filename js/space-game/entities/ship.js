@@ -1,5 +1,8 @@
 // Ship Object
-function Ship(state) {
+function Ship(state, x, y) {
+
+    // Set View
+    var view = state.camera.view;
     this.vx = 0;
     this.vy = 0;
     this.accel = 0.2;
@@ -13,9 +16,11 @@ function Ship(state) {
     {
         this.sprite = new PIXI.Sprite(PIXI.loader.resources.ship_spritesheet.textures[this.frames[this.frame]]);
         this.sprite.anchor.set(0.5, 0.5);
-        this.sprite.position.set(state.engine.renderer.view.width/2, state.engine.renderer.view.height/2);
+        this.sprite.position.set(x, y);
         this.sprite.rotation -= Math.PI/2;
-        state.container.addChild(this.sprite);
+
+        // Make visible
+        view.addChild(this.sprite);
     };
     this.update = function()
     {
@@ -39,7 +44,7 @@ function Ship(state) {
         this.sprite.y += this.vy;
 
         // Test Bounds
-        var padding = this.sprite.width/2;
+        /*var padding = this.sprite.width/2;
         if ( this.sprite.x < -padding )
             { this.sprite.x = state.engine.renderer.view.width + padding; }
         if ( this.sprite.x > state.engine.renderer.view.width + padding )
@@ -47,7 +52,7 @@ function Ship(state) {
         if ( this.sprite.y < -padding )
             { this.sprite.y = state.engine.renderer.view.height + padding; }
         if ( this.sprite.y > state.engine.renderer.view.height + padding )
-            { this.sprite.y = -padding; }
+            { this.sprite.y = -padding; }*/
     };
     this.accelerate = function()
     {

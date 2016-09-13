@@ -9,16 +9,18 @@ function GameEngine()
     // Setup PIXI
     this.renderer, this.stage;
 
+    // Define Container Element
+    this.container = $('#game_container');
 
     this.init = function()
     {
         // Detect which renderer is available... WebGL or Canvas Drawing API
-        this.renderer = PIXI.autoDetectRenderer(1000, 600);
+        this.renderer = PIXI.autoDetectRenderer(1000, 700);
         this.renderer.view.style.display = 'block';
         this.renderer.view.style.margin = '50px auto';
 
         // Attach view to DOM
-        document.body.appendChild(this.renderer.view);
+        this.container.append(this.renderer.view);
 
         // Create stage used for display
         this.stage = new PIXI.Container();

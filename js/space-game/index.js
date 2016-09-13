@@ -26,7 +26,8 @@ load_dependencies
     .load(dir+'gameengine.js')
     .load(dir+'menustate.js')
     .load(dir+'pausestate.js')
-    .load(dir+'gamestate.js')
+    .load(dir+'playstate.js')
+    .load(dir+'camera.js')
     .load(dir+'entities/ship.js')
     .load(dir+'entities/bullet.js');
 

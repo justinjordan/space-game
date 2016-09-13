@@ -24,7 +24,7 @@ function MenuState(engine)
         // Handle Input
         if ( engine.keyboard.was_tapped('Enter') )
         {
-            engine.pushState(new GameState(engine));
+            engine.pushState(new PlayState(engine));
 
             this.cleanup();
         }

@@ -1,12 +1,15 @@
-function GameState(engine)
+function PlayState(engine)
 {
     var $this = this;
     this.engine = engine;
 
     var running = false;
-    this.container = new PIXI.Container();
 
-    this.ship = new Ship($this);
+    // Setup View Objects
+    this.camera = new Camera(engine);
+
+    // Setup entities
+    this.ship = new Ship($this, engine.renderer.view.width/2, 0.9*engine.renderer.view.height);
     this.bullets = [];
 
     this.init = function()
@@ -14,8 +17,12 @@ function GameState(engine)
         // Load Images
         this.load_images($this.setup);
 
-        // Add Container to stage
-        engine.stage.addChild($this.container);
+        // Add camera to stage
+        engine.stage.addChild(this.camera.view);
+
+        // Focus on Ship
+        this.camera.setFocus(this.ship);
+
     };
     this.update = function()
     {
@@ -43,12 +50,15 @@ function GameState(engine)
                 }
 
             }
+
+            // Update camera
+            this.camera.update();
         }
     };
     this.cleanup = function()
     {
         // Remove from screen
-        $this.container.destroy();
+        this.camera.cleanup();
 
         // Close state
         engine.shiftState();
