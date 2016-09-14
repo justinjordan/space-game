@@ -1,52 +1,62 @@
 // Bullet Object
-function Bullet(state)
+function Bullet(state, view, x, y, vx, vy, enemy)
 {
-    // Set View
-    var view = state.camera.view;
-
-    this.vx = 0;
-    this.vy = 0;
     this.circle;
 
     this.dead = false;
+    this.enemy = (typeof enemy=='boolean')?enemy:false;
 
     var speed = 10;
     var lifespan = 5000;
     var birth = Date.now();
+    var fading = false;
+    var fade_rate = 0.1;
 
     this.init = function()
     {
         this.circle = new PIXI.Graphics();
-        this.circle.beginFill(0xffffff);
+        if ( enemy )
+            { this.circle.beginFill(0xffff00); }
+        else
+            { this.circle.beginFill(0xddddff); }
         this.circle.drawCircle(0,0,2);
         this.circle.endFill();
-        this.circle.x = state.ship.sprite.x;
-        this.circle.y = state.ship.sprite.y;
+        this.circle.x = x;
+        this.circle.y = y;
 
         // Make visible
         view.addChild(this.circle);
 
-        // Set Velocity
-        this.vx = state.ship.vx + speed*Math.cos(state.ship.sprite.rotation);
-        this.vy = state.ship.vy + speed*Math.sin(state.ship.sprite.rotation);
     };
 
     this.update = function()
     {
-        // Move bullet
-        this.circle.x += this.vx;
-        this.circle.y += this.vy;
-
         // Check lifespan
-        if ( Date.now() - birth >= lifespan )
-            { this.dead = true; }
+        if ( fading )
+        {
+            this.circle.alpha -= fade_rate;
+
+            if ( this.circle.alpha <= 0 )
+                { this.dead = true; }
+        }
+        else if ( Date.now() - birth >= lifespan )
+            { fading = true; }
+
+        // Move bullet
+        this.circle.x += vx;
+        this.circle.y += vy;
     };
 
     this.cleanup = function()
     {
         // Destroy Graphics
         view.removeChild(this.circle);
-    }
+    };
+
+    this.add_to_view = function(v)
+    {
+        v.addChild(view);
+    };
 
     this.init();
 }

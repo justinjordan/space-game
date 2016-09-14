@@ -1,10 +1,12 @@
 // Ship Object
-function Ship(state, x, y) {
+function Ship(state, view, x, y) {
+    var $this = this;
 
-    // Set View
-    var view = state.camera.view;
+    this.x = x, this.y = y, this.rotation = -Math.PI/2;
+    this.start_x = x;
+    this.start_y = y;
     this.vx = 0;
-    this.vy = 0;
+    this.vy = -2;
     this.accel = 0.2;
     this.rot_accel = 0.1;
     this.frame = 'normal';
@@ -12,18 +14,24 @@ function Ship(state, x, y) {
         normal: 'ship.png',
         thrust: 'ship_thrust.png'
     };
+
+    var bullet_speed = 20;
+
+
+
     this.init = function()
     {
+        // Setup Sprite
         this.sprite = new PIXI.Sprite(PIXI.loader.resources.ship_spritesheet.textures[this.frames[this.frame]]);
         this.sprite.anchor.set(0.5, 0.5);
-        this.sprite.position.set(x, y);
-        this.sprite.rotation -= Math.PI/2;
 
         // Make visible
         view.addChild(this.sprite);
     };
     this.update = function()
     {
+
+
         // Control Ship
         if ( state.engine.keyboard.is_down('ArrowUp') )
         {
@@ -37,22 +45,18 @@ function Ship(state, x, y) {
         if ( state.engine.keyboard.is_down('ArrowRight') )
             { this.rotate(1); }
         if ( state.engine.keyboard.was_tapped('Space') )
-            { state.bullets.push(new Bullet(state)); }
+        {
+            shoot();
+        }
 
         // Move Ship
-        this.sprite.x += this.vx;
-        this.sprite.y += this.vy;
+        this.x += this.vx;
+        this.y += this.vy;
 
-        // Test Bounds
-        /*var padding = this.sprite.width/2;
-        if ( this.sprite.x < -padding )
-            { this.sprite.x = state.engine.renderer.view.width + padding; }
-        if ( this.sprite.x > state.engine.renderer.view.width + padding )
-            { this.sprite.x = -padding; }
-        if ( this.sprite.y < -padding )
-            { this.sprite.y = state.engine.renderer.view.height + padding; }
-        if ( this.sprite.y > state.engine.renderer.view.height + padding )
-            { this.sprite.y = -padding; }*/
+        // Adjust Sprite
+        this.sprite.position.set(this.x, this.y);
+        this.sprite.rotation = this.rotation;
+
     };
     this.accelerate = function()
     {
@@ -64,7 +68,7 @@ function Ship(state, x, y) {
         if ( typeof dir == 'undefined' )
             { dir = 1; }
 
-        this.sprite.rotation += this.rot_accel*dir;
+        this.rotation += this.rot_accel*dir;
     };
     this.show_frame = function(frame)
     {
@@ -73,5 +77,17 @@ function Ship(state, x, y) {
             this.sprite.setTexture(PIXI.loader.resources.ship_spritesheet.textures[this.frames[frame]]);
             this.frame = frame;
         }
+    };
+
+    var shoot = function()
+    {
+        state.bullets.push(new Bullet(
+            state,
+            view,
+            $this.x + ($this.sprite.height/4) * Math.cos($this.rotation), // places bullet on nose of ship
+            $this.y + ($this.sprite.height/4) * Math.sin($this.rotation), // places bullet on nose of ship
+            $this.vx + bullet_speed*Math.cos($this.rotation),
+            $this.vy + bullet_speed*Math.sin($this.rotation)
+        ));
     };
 }

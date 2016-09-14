@@ -3,30 +3,31 @@ function PlayState(engine)
     var $this = this;
     this.engine = engine;
 
-    var running = false;
-
     // Setup View Objects
     this.camera = new Camera(engine);
 
     // Setup entities
-    this.ship = new Ship($this, engine.renderer.view.width/2, 0.9*engine.renderer.view.height);
+    this.background = new Background($this, this.camera.view);
+    this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
     this.bullets = [];
 
     this.init = function()
     {
-        // Load Images
-        this.load_images($this.setup);
+
+        // Add background
+        this.background.init();
+
+        // Setup ship
+        $this.ship.init();
 
         // Add camera to stage
-        engine.stage.addChild(this.camera.view);
-
+        engine.stage.addChild($this.camera.view);
         // Focus on Ship
-        this.camera.setFocus(this.ship);
-
+        $this.camera.setFocus($this.ship);
     };
     this.update = function()
     {
-        if ( running && engine.states.length == 1 )
+        if ( engine.states.length == 1 )
         {
             // Handle Input
             if ( engine.keyboard.was_tapped('KeyP') )
@@ -41,19 +42,27 @@ function PlayState(engine)
             // Update bullets
             for ( var i in this.bullets )
             {
-                if ( !this.bullets[i].dead )
-                    { this.bullets[i].update(); }
-                else
+                if ( this.bullets[i].dead )
                 {
                     this.bullets[i].cleanup();
                     this.bullets.splice(i, 1);
                 }
+                else
+                { this.bullets[i].update(); }
 
             }
+
+            // Update Background
+            this.background.update();
 
             // Update camera
             this.camera.update();
         }
+
+
+        /******* DEBUG *******/
+        this.debug();
+        /******* DEBUG *******/
     };
     this.cleanup = function()
     {
@@ -66,29 +75,18 @@ function PlayState(engine)
 
     this.setup = function()
     {
-        // Setup ship
-        $this.ship.init();
 
-        running = true;
-    };
-
-    this.load_images = function(callback)
-    {
-        PIXI.loader
-            .add([
-                {
-                    name:   'ship_spritesheet',
-                    url:    'images/sprites/ship_spritesheet.json'
-                }
-            ])
-            .on('progress', this.load_progress_handler)
-            .load(callback);
     };
 
     this.load_progress_handler = function(loader, resource)
     {
         // preloader stuff goes here
     };
+
+    /********** DEBUG ***********/
+    this.debug = function() {
+    };
+    /********** DEBUG ***********/
 
     this.init();
 }

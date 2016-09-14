@@ -11,25 +11,44 @@ function GameEngine()
 
     // Define Container Element
     this.container = $('#game_container');
+    this.width = $(window).width();
+    this.height = $(window).height();
+
+    // On Window resize
+    $(window).resize(function(e) {
+        this.width = $(window).width();
+        this.height = $(window).height();
+        $this.renderer.resize(this.width, this.height);
+    });
 
     this.init = function()
     {
-        // Detect which renderer is available... WebGL or Canvas Drawing API
-        this.renderer = PIXI.autoDetectRenderer(1000, 700);
-        this.renderer.view.style.display = 'block';
-        this.renderer.view.style.margin = '50px auto';
+        this.load_images(function() {
 
-        // Attach view to DOM
-        this.container.append(this.renderer.view);
+            // Detect which renderer is available... WebGL or Canvas Drawing API
+            $this.renderer = PIXI.autoDetectRenderer($this.width, $this.height);
+            //$this.renderer.view.style.display = 'block';
+            //$this.renderer.view.style.margin = '50px auto';
 
-        // Create stage used for display
-        this.stage = new PIXI.Container();
+            // Attach view to DOM
+            $this.container.append($this.renderer.view);
 
-        // Start gameloop
-        setInterval(this.update, this.frame_duration);
+            // Create stage used for display
+            $this.stage = new PIXI.Container();
 
-        // Load MenuState
-        this.pushState(new MenuState($this));
+            // Add Background... Doesn't move.  That's why.
+            //$this.background = new PIXI.Sprite(PIXI.loader.resources.starfield.texture);
+            //$this.stage.addChild($this.background);
+
+
+            // Start gameloop
+            setInterval($this.update, $this.frame_duration);
+
+            // Load MenuState
+            $this.pushState(new MenuState($this));
+
+        });
+
     };
 
     this.update = function()
@@ -58,6 +77,24 @@ function GameEngine()
     {
         $this.states.unshift(state);
     };
+
+    this.load_images = function(callback)
+    {
+        PIXI.loader
+            .add([
+                {
+                    name:   'ship_spritesheet',
+                    url:    'images/sprites/ship_spritesheet.json'
+                },
+                {
+                    name:   'starfield',
+                    url:    'images/sprites/starfield.png'
+                }
+            ])
+            .on('progress', this.load_progress_handler)
+            .load(callback);
+    };
+
 
     this.init();
 }

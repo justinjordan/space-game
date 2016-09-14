@@ -13,8 +13,8 @@ function PauseState(engine)
         );
         this.message.anchor.set(0.5, 0.5);
         this.message.position.set(
-            engine.renderer.view.width/2,
-            engine.renderer.view.height/2
+            0.5 * engine.renderer.view.width,
+            0.25 * engine.renderer.view.height
         );
         container.addChild(this.message);
 
