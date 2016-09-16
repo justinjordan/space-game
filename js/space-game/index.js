@@ -39,6 +39,7 @@ load_dependencies.load([
     'entities/background.js',
     'entities/camera.js',
     'entities/ship.js',
+    'entities/astronaut.js',
     'entities/bullet.js',
 ], dir);
 

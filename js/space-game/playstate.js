@@ -9,6 +9,7 @@ function PlayState(engine)
     // Setup entities
     this.background = new Background($this, this.camera.view);
     this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
+    this.astronaut = new Astronaut($this, $this.camera);
     this.bullets = [];
 
     this.init = function()
@@ -35,12 +36,30 @@ function PlayState(engine)
                 // Open Pause Menu
                 engine.unshiftState(new PauseState(engine));
             }
+            if ( engine.keyboard.was_tapped('Enter') )
+            {
+                if ( ship.control ) // In ship
+                {
+                    astronaut.x = ship.x + 40;
+                    astronaut.y = ship.y;
+                    astronaut.sprite.visible = true;
+                    $this.camera.setFocus($this.astronaut);
+                    ship.control = false;
+                    astronaut.control = true;
+                }
+                else if ( get_dist($this.ship, $this.astronaut) < 100 ) // Space walk
+                {
+                    astronaut.sprite.visible = false;
+                    $this.camera.setFocus($this.ship);
+                    astronaut.control = false;
+                    ship.control = true;
+                }
+            }
 
-            // Update Ship
-            $this.ship.update();
-
-            // Update bullets
-            for ( var i in this.bullets )
+            // Update entities
+            $this.ship.update(); // Ship
+            $this.astronaut.update(); // Astronaut
+            for ( var i in this.bullets ) // Bullets
             {
                 if ( this.bullets[i].dead )
                 {
@@ -48,8 +67,7 @@ function PlayState(engine)
                     this.bullets.splice(i, 1);
                 }
                 else
-                { this.bullets[i].update(); }
-
+                    { this.bullets[i].update(); }
             }
 
             // Update Background
@@ -60,9 +78,6 @@ function PlayState(engine)
         }
 
 
-        /******* DEBUG *******/
-        this.debug();
-        /******* DEBUG *******/
     };
     this.cleanup = function()
     {
@@ -83,10 +98,18 @@ function PlayState(engine)
         // preloader stuff goes here
     };
 
-    /********** DEBUG ***********/
-    this.debug = function() {
-    };
-    /********** DEBUG ***********/
-
     this.init();
+
+
+    /*********** PRIVATE ************/
+    var get_dist = function(ent1,ent2)
+    {
+        var xdiff = ent2.x - ent1.x;
+        var ydiff = ent2.y - ent1.y;
+
+        return Math.sqrt(xdiff*xdiff+ydiff*ydiff);
+    }
+
+
+
 }

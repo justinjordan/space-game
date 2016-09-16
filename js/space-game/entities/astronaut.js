@@ -1,11 +1,10 @@
-// Ship Object
-function Ship(state, view, x, y) {
+function Astronaut(state, view, x, y, control) {
     var $this = this;
 
-    this.control = true;
-    this.x = x, this.y = y, this.rotation = -Math.PI/2;
-    this.start_x = x;
-    this.start_y = y;
+    this.control = (typeof control!='undefined')?control:false;
+    this.x = (typeof x!='undefined')?x:0, this.y = (typeof y!='undefined')?y:0, this.rotation = -Math.PI/2;
+    this.start_x = (typeof x!='undefined')?x:0;
+    this.start_y = (typeof y!='undefined')?y:0;
     this.vx = 0;
     this.vy = -2;
     this.accel = 0.2;
@@ -36,7 +35,7 @@ function Ship(state, view, x, y) {
     {
 
 
-        // Control Ship
+        // Keyboard Control
         if ( this.control )
         {
             if ( state.engine.keyboard.is_down('ArrowUp') )
@@ -56,7 +55,7 @@ function Ship(state, view, x, y) {
             }
         }
 
-        // Move Ship
+        // Move
         this.x += this.vx;
         this.y += this.vy;
 
