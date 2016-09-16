@@ -1,12 +1,14 @@
-function Astronaut(state, view, x, y, control) {
+function Astronaut(state, view, ship) {
     var $this = this;
 
     this.control = (typeof control!='undefined')?control:false;
-    this.x = (typeof x!='undefined')?x:0, this.y = (typeof y!='undefined')?y:0, this.rotation = -Math.PI/2;
+    this.x = 0;
+    this.y = 0;
+    this.rotation = -Math.PI/2;
     this.start_x = (typeof x!='undefined')?x:0;
     this.start_y = (typeof y!='undefined')?y:0;
     this.vx = 0;
-    this.vy = -2;
+    this.vy = 0;
     this.accel = 0.2;
     this.rot_accel = 0.1;
     this.frame = 'normal';
@@ -16,6 +18,7 @@ function Astronaut(state, view, x, y, control) {
     };
 
     var bullet_speed = 20;
+    var fade_rate = 0.01;
 
 
 
@@ -24,6 +27,7 @@ function Astronaut(state, view, x, y, control) {
         // Setup Sprite
         this.sprite = new PIXI.Sprite(PIXI.loader.resources.ship_spritesheet.textures[this.frames[this.frame]]);
         this.sprite.anchor.set(0.5, 0.5);
+        this.sprite.alpha = 0;
 
         // Set default frame
         this.show_frame('normal');
@@ -35,9 +39,9 @@ function Astronaut(state, view, x, y, control) {
     {
 
 
-        // Keyboard Control
         if ( this.control )
         {
+            // Keyboard Control
             if ( state.engine.keyboard.is_down('ArrowUp') )
             {
                 this.accelerate();
@@ -53,18 +57,37 @@ function Astronaut(state, view, x, y, control) {
             {
                 shoot();
             }
+
+            // fade in
+            if ( this.sprite.alpha < 1 )
+            {
+                this.sprite.alpha += fade_rate
+                if ( this.sprite.alpha < 0 )
+                    { this.sprite.alpha = 0; }
+            }
+
+
+            // Move
+            this.x += this.vx;
+            this.y += this.vy;
+
+            // Adjust Sprite
+            this.sprite.position.set(this.x, this.y);
+            this.sprite.rotation = this.rotation;
+
+        }
+        else
+        {
+            this.sprite.alpha = 0;
+            this.x = ship.x;
+            this.y = ship.y;
+            this.vx = ship.vx;
+            this.vy = ship.vy;
+            this.rotation = ship.rotation;
         }
 
-        // Move
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Adjust Sprite
-        this.sprite.position.set(this.x, this.y);
-        this.sprite.rotation = this.rotation;
-
     };
-    this.accelerate = function()
+    this.accelerate = function(add)
     {
         this.vx += this.accel*Math.cos(this.sprite.rotation);
         this.vy += this.accel*Math.sin(this.sprite.rotation);

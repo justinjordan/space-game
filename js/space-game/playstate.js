@@ -9,7 +9,7 @@ function PlayState(engine)
     // Setup entities
     this.background = new Background($this, this.camera.view);
     this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
-    this.astronaut = new Astronaut($this, $this.camera);
+    this.astronaut = new Astronaut($this, $this.camera.view, this.ship);
     this.bullets = [];
 
     this.init = function()
@@ -20,6 +20,8 @@ function PlayState(engine)
 
         // Setup ship
         $this.ship.init();
+        // Setup astronaut
+        $this.astronaut.init();
 
         // Add camera to stage
         engine.stage.addChild($this.camera.view);
@@ -36,23 +38,23 @@ function PlayState(engine)
                 // Open Pause Menu
                 engine.unshiftState(new PauseState(engine));
             }
-            if ( engine.keyboard.was_tapped('Enter') )
+            if ( engine.keyboard.was_tapped('Digit6') )
             {
-                if ( ship.control ) // In ship
+                if ( $this.ship.control ) // In ship
                 {
-                    astronaut.x = ship.x + 40;
-                    astronaut.y = ship.y;
-                    astronaut.sprite.visible = true;
+                    $this.astronaut.x = $this.ship.x;
+                    $this.astronaut.y = $this.ship.y;
+                    $this.astronaut.sprite.visible = true;
                     $this.camera.setFocus($this.astronaut);
-                    ship.control = false;
-                    astronaut.control = true;
+                    $this.ship.control = false;
+                    $this.astronaut.control = true;
                 }
                 else if ( get_dist($this.ship, $this.astronaut) < 100 ) // Space walk
                 {
-                    astronaut.sprite.visible = false;
+                    $this.astronaut.sprite.visible = false;
                     $this.camera.setFocus($this.ship);
-                    astronaut.control = false;
-                    ship.control = true;
+                    $this.astronaut.control = false;
+                    $this.ship.control = true;
                 }
             }
 
