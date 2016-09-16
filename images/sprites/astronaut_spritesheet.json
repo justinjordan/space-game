@@ -1,0 +1,30 @@
+{"frames": {
+
+"astronaut.png":
+{
+	"frame": {"x":0,"y":0,"w":42,"h":15},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":15},
+	"sourceSize": {"w":42,"h":15},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"astronaut_thrust.png":
+{
+	"frame": {"x":42,"y":0,"w":42,"h":15},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":42,"h":15},
+	"sourceSize": {"w":42,"h":15},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "astronaut_spritesheet.png",
+	"format": "RGBA8888",
+	"size": {"w":84,"h":15},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6bbda4a960feba8cca82c0e479ad30d1:d0fed694bfd22819876b4f1317ff5b98:dc8294726c6ae6d2a242b7d29d1a2aff$"
+}
+}

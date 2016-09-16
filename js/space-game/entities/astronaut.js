@@ -4,17 +4,17 @@ function Astronaut(state, view, ship) {
     this.control = (typeof control!='undefined')?control:false;
     this.x = 0;
     this.y = 0;
-    this.rotation = -Math.PI/2;
+    //this.rotation = -Math.PI/2;
     this.start_x = (typeof x!='undefined')?x:0;
     this.start_y = (typeof y!='undefined')?y:0;
     this.vx = 0;
     this.vy = 0;
-    this.accel = 0.02;
+    this.accel = 0.05;
     this.rot_accel = 0.05;
     this.frame = 'normal';
     this.frames = {
-        normal: 'ship.png',
-        thrust: 'ship_thrust.png'
+        normal: 'astronaut.png',
+        thrust: 'astronaut_thrust.png'
     };
 
     var bullet_speed = 20;
@@ -25,8 +25,9 @@ function Astronaut(state, view, ship) {
     this.init = function()
     {
         // Setup Sprite
-        this.sprite = new PIXI.Sprite(PIXI.loader.resources.ship_spritesheet.textures[this.frames[this.frame]]);
-        this.sprite.anchor.set(0.5, 0.5);
+        this.sprite = new PIXI.Sprite(PIXI.loader.resources.astronaut_spritesheet.textures[this.frames[this.frame]]);
+        //this.sprite = new PIXI.Sprite(PIXI.loader.resources.astronaut.texture);
+        this.sprite.anchor.set(0.6, 0.5);
         this.sprite.alpha = 0;
 
         // Set default frame
@@ -53,13 +54,17 @@ function Astronaut(state, view, ship) {
                 { this.rotate(-1); }
             if ( state.engine.keyboard.is_down('ArrowRight') )
                 { this.rotate(1); }
-            if ( state.engine.keyboard.was_tapped('Space') )
+            /*if ( state.engine.keyboard.was_tapped('Space') )
             {
                 shoot();
-            }
+            }*/
+
+            // Make visible
+            this.sprite.alpha = 1;
+
 
             // fade in
-            if ( this.sprite.alpha < 1 )
+            /*if ( this.sprite.alpha < 1 )
             {
                 this.sprite.alpha += fade_rate
                 this.sprite.scale.x += fade_rate;
@@ -71,7 +76,8 @@ function Astronaut(state, view, ship) {
                     this.sprite.scale.x = 1;
                     this.sprite.scale.y = 1;
                 }
-            }
+            }*/
+
 
             // Move
             //this.x += this.vx;
@@ -84,8 +90,8 @@ function Astronaut(state, view, ship) {
             this.vx = ship.vx;
             this.vy = ship.vy;
 
-            if ( this.sprite.alpha > 0 ) // visible
-                { this.sprite.alpha = 0; }
+            // Make invisible
+            this.sprite.alpha = 0;
 
             this.x = ship.x;
             this.y = ship.y;
@@ -120,7 +126,7 @@ function Astronaut(state, view, ship) {
     {
         if ( typeof frame != 'undefined' && frame!=this.frame )
         {
-            this.sprite.setTexture(PIXI.loader.resources.ship_spritesheet.textures[this.frames[frame]]);
+            this.sprite.setTexture(PIXI.loader.resources.astronaut_spritesheet.textures[this.frames[frame]]);
             this.frame = frame;
         }
     };

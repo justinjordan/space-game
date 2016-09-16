@@ -89,7 +89,11 @@ function GameEngine()
                 {
                     name:   'starfield',
                     url:    'images/sprites/starfield.png'
-                }
+                },
+                {
+                    name:   'astronaut_spritesheet',
+                    url:    'images/sprites/astronaut_spritesheet.json'
+                },
             ])
             .on('progress', this.load_progress_handler)
             .load(callback);
