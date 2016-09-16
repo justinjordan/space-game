@@ -9,8 +9,8 @@ function Astronaut(state, view, ship) {
     this.start_y = (typeof y!='undefined')?y:0;
     this.vx = 0;
     this.vy = 0;
-    this.accel = 0.2;
-    this.rot_accel = 0.1;
+    this.accel = 0.02;
+    this.rot_accel = 0.05;
     this.frame = 'normal';
     this.frames = {
         normal: 'ship.png',
@@ -18,7 +18,7 @@ function Astronaut(state, view, ship) {
     };
 
     var bullet_speed = 20;
-    var fade_rate = 0.01;
+    var fade_rate = 0.02;
 
 
 
@@ -39,7 +39,7 @@ function Astronaut(state, view, ship) {
     {
 
 
-        if ( this.control )
+        if ( this.control ) // Contolled by keyboard
         {
             // Keyboard Control
             if ( state.engine.keyboard.is_down('ArrowUp') )
@@ -62,11 +62,36 @@ function Astronaut(state, view, ship) {
             if ( this.sprite.alpha < 1 )
             {
                 this.sprite.alpha += fade_rate
-                if ( this.sprite.alpha < 0 )
-                    { this.sprite.alpha = 0; }
+                this.sprite.scale.x += fade_rate;
+                this.sprite.scale.y += fade_rate;
+                if ( this.sprite.alpha > 1 )
+                    { this.sprite.alpha = 1; }
+                if ( this.sprite.scale.x > 1 || this.sprite.scale.y > 1 )
+                {
+                    this.sprite.scale.x = 1;
+                    this.sprite.scale.y = 1;
+                }
             }
 
+            // Move
+            //this.x += this.vx;
+            //this.y += this.vy;
 
+        }
+        else // Stationary
+        {
+
+            this.vx = ship.vx;
+            this.vy = ship.vy;
+
+            if ( this.sprite.alpha > 0 ) // visible
+                { this.sprite.alpha = 0; }
+
+            this.x = ship.x;
+            this.y = ship.y;
+            this.rotation = ship.rotation;
+            this.accelerate(0.2);
+        }
             // Move
             this.x += this.vx;
             this.y += this.vy;
@@ -75,22 +100,14 @@ function Astronaut(state, view, ship) {
             this.sprite.position.set(this.x, this.y);
             this.sprite.rotation = this.rotation;
 
-        }
-        else
-        {
-            this.sprite.alpha = 0;
-            this.x = ship.x;
-            this.y = ship.y;
-            this.vx = ship.vx;
-            this.vy = ship.vy;
-            this.rotation = ship.rotation;
-        }
-
     };
-    this.accelerate = function(add)
+    this.accelerate = function(v, d)
     {
-        this.vx += this.accel*Math.cos(this.sprite.rotation);
-        this.vy += this.accel*Math.sin(this.sprite.rotation);
+        var vel = (typeof v!='undefined')?v:this.accel;
+        var dir = (typeof d!='undefined')?d:this.rotation;
+
+        this.vx += vel*Math.cos(dir);
+        this.vy += vel*Math.sin(dir);
     };
     this.rotate = function(dir)
     {

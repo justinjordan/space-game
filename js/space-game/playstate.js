@@ -44,15 +44,13 @@ function PlayState(engine)
                 {
                     $this.astronaut.x = $this.ship.x;
                     $this.astronaut.y = $this.ship.y;
-                    $this.astronaut.sprite.visible = true;
-                    $this.camera.setFocus($this.astronaut);
+                    $this.camera.setFocus($this.astronaut, 1.2);
                     $this.ship.control = false;
                     $this.astronaut.control = true;
                 }
-                else if ( get_dist($this.ship, $this.astronaut) < 100 ) // Space walk
+                else if ( this.get_dist($this.ship, $this.astronaut) < 50 ) // Space walk
                 {
-                    $this.astronaut.sprite.visible = false;
-                    $this.camera.setFocus($this.ship);
+                    $this.camera.setFocus($this.ship, 1);
                     $this.astronaut.control = false;
                     $this.ship.control = true;
                 }
@@ -104,7 +102,7 @@ function PlayState(engine)
 
 
     /*********** PRIVATE ************/
-    var get_dist = function(ent1,ent2)
+    this.get_dist = function(ent1,ent2)
     {
         var xdiff = ent2.x - ent1.x;
         var ydiff = ent2.y - ent1.y;

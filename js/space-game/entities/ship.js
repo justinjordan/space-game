@@ -55,6 +55,8 @@ function Ship(state, view, x, y) {
                 shoot();
             }
         }
+        else if ( this.frame != 'normal' )
+            { this.show_frame('normal'); }
 
         // Move Ship
         this.x += this.vx;

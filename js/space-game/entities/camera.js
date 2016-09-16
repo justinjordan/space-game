@@ -1,5 +1,7 @@
 function Camera(engine)
 {
+    var center = new PIXI.Point(engine.renderer.view.width/2, engine.renderer.view.height/2);
+
     this.view = new PIXI.Container();
     this.view.alpha = 0;
     var fade_out = false;
@@ -10,15 +12,13 @@ function Camera(engine)
     var vy = 0;
 
     var focus = {};
-    var dest = {
-        x: 0,
-        y: 0
-    };
-    var center = new PIXI.Point(engine.renderer.view.width/2, engine.renderer.view.height/2);
+    var zoom = 1;
+
     var easing = 0.1;
 
     this.update = function()
     {
+        // Fade in and out
         if ( !fade_out && this.view.alpha < 1 )
         {
             this.view.alpha += fade_rate;
@@ -32,25 +32,38 @@ function Camera(engine)
                     { this.view.alpha = 1; }
             }
 
+        // Follow motion
+        this.view.x -= focus.vx;
+        this.view.y -= focus.vy;
+
+        // Adjust Camera
         if ( typeof focus!='undefined' )
         {
-            dest = {
-                x: center.x-focus.x + focus.vx,
-                y: center.y-focus.y + focus.vy
-            };
-        }
+            var g_focus = this.view.toGlobal(new PIXI.Point(focus.x,focus.y));
+            var xdiff = center.x-g_focus.x;
+            var ydiff = center.y-g_focus.y;
+            var dist = Math.sqrt(xdiff*xdiff+ydiff*ydiff);
+            var dir = Math.atan2(ydiff,xdiff);
+            var vel = dist / 10;
 
-        // Move Camera
-        this.view.x = dest.x;
-        this.view.y = dest.y;
+            // Set Position
+            this.view.x = this.view.x + vel*Math.cos(dir);
+            this.view.y = this.view.y + vel*Math.sin(dir);
+
+            // Set Zoom
+            //this.view.scale.set(zoom,zoom);
+            //this.view.pivot = focus;
+        }
     };
+
     this.cleanup = function()
     {
         this.view.destroy();
     };
 
-    this.setFocus = function(f)
+    this.setFocus = function(f, z)
     {
         focus = f;
+        zoom = (typeof z!='undefined')?z:1;
     };
 }
