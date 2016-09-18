@@ -44,7 +44,7 @@ function PlayState(engine)
                 {
                     $this.astronaut.x = $this.ship.x;
                     $this.astronaut.y = $this.ship.y;
-                    $this.camera.setFocus($this.astronaut, 1.2);
+                    $this.camera.setFocus($this.astronaut, 2);
                     $this.ship.control = false;
                     $this.astronaut.control = true;
                 }

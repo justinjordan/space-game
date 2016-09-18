@@ -44,15 +44,21 @@ function Camera(engine)
             var ydiff = center.y-g_focus.y;
             var dist = Math.sqrt(xdiff*xdiff+ydiff*ydiff);
             var dir = Math.atan2(ydiff,xdiff);
-            var vel = dist / 10;
+            var vel = easing * dist;
 
             // Set Position
             this.view.x = this.view.x + vel*Math.cos(dir);
             this.view.y = this.view.y + vel*Math.sin(dir);
 
+            // Set pivot
+            //this.view.pivot.set(center);
+
             // Set Zoom
-            //this.view.scale.set(zoom,zoom);
-            //this.view.pivot = focus;
+            if ( this.view.scale.x != zoom )
+            {
+                var z = easing * (zoom-this.view.scale);
+                //this.view.scale.set(z,z);
+            }
         }
     };
 
@@ -64,6 +70,6 @@ function Camera(engine)
     this.setFocus = function(f, z)
     {
         focus = f;
-        zoom = (typeof z!='undefined')?z:1;
+        zoom = (typeof z!='undefined')?z:zoom;
     };
 }

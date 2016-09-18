@@ -25,8 +25,22 @@ var load_dependencies = {
         }
         return this;
     },
-    success: function() {
-        return attempts==successes;
+    on_success: function(callback)
+    {
+	var checks = 0;
+        var interval = setInterval(function()
+        {
+            if ( this.attempts==this.successes )
+            {
+                callback();
+                clearInterval(interval);
+            }
+            else if ( checks >= 60 )
+            {
+                console.log("Dependency Load Timed Out!");
+		clearInterval(interval);
+            }
+        }, 1000);
     }
 };
 
@@ -44,8 +58,8 @@ load_dependencies.load([
 ], dir);
 
 $(function() {
-    if ( load_dependencies.success )
-        { var game = new GameEngine(); }
-    else
-        { console.log('Classes not loaded!'); }
+    var game;
+    load_dependencies.on_success(function() {
+        game = new GameEngine();
+    });
 });
