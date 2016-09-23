@@ -1,4 +1,4 @@
-function Astronaut(state, view, ship) {
+function Astronaut(state, view, ship, control) {
     var $this = this;
 
     this.control = (typeof control!='undefined')?control:false;

@@ -8,7 +8,10 @@ function PlayState(engine)
 
     // Setup entities
     this.background = new Background($this, this.camera.view);
-    this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
+    this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height, true);
+    this.ships = [];
+    //this.ships.push = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height, true);
+    this.ships.push = new Ship($this, $this.camera.view, 0.75 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
     this.astronaut = new Astronaut($this, $this.camera.view, this.ship);
     this.bullets = [];
 
@@ -22,6 +25,10 @@ function PlayState(engine)
         $this.ship.init();
         // Setup astronaut
         $this.astronaut.init();
+
+        // Setup ships
+        for ( var i in $this.ships )
+            { $this.ships[i].init(); }
 
         // Add camera to stage
         engine.stage.addChild($this.camera.view);
@@ -40,6 +47,14 @@ function PlayState(engine)
             }
             if ( engine.keyboard.was_tapped('Digit6') )
             {
+                if ( $this.astronaut.control )
+                {
+                    for ( var i in $this.ships )
+                    {
+
+                    }
+                }
+                /*
                 if ( $this.ship.control ) // In ship
                 {
                     $this.astronaut.x = $this.ship.x;
@@ -54,11 +69,17 @@ function PlayState(engine)
                     $this.astronaut.control = false;
                     $this.ship.control = true;
                 }
+                */
             }
 
             // Update entities
             $this.ship.update(); // Ship
             $this.astronaut.update(); // Astronaut
+
+            for ( var i in this.ships )
+            {
+                this.ships[i].update();
+            }
             for ( var i in this.bullets ) // Bullets
             {
                 if ( this.bullets[i].dead )

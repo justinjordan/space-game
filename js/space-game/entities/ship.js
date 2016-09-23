@@ -1,8 +1,8 @@
 // Ship Object
-function Ship(state, view, x, y) {
+function Ship(state, view, x, y, control) {
     var $this = this;
 
-    this.control = true;
+    this.control = (typeof control!='undefined')?control:false;
     this.x = x, this.y = y, this.rotation = -Math.PI/2;
     this.start_x = x;
     this.start_y = y;

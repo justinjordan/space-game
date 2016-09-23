@@ -32,13 +32,13 @@ function Camera(engine)
                     { this.view.alpha = 1; }
             }
 
-        // Follow motion
-        this.view.x -= focus.vx;
-        this.view.y -= focus.vy;
-
         // Adjust Camera
         if ( typeof focus!='undefined' )
         {
+            // Follow motion
+            this.view.x -= focus.vx;
+            this.view.y -= focus.vy;
+
             var g_focus = this.view.toGlobal(new PIXI.Point(focus.x,focus.y));
             var xdiff = center.x-g_focus.x;
             var ydiff = center.y-g_focus.y;
@@ -69,7 +69,17 @@ function Camera(engine)
 
     this.setFocus = function(f, z)
     {
-        focus = f;
-        zoom = (typeof z!='undefined')?z:zoom;
+        if ( typeof f['x'] == 'undefined' || typeof f['y'] == 'undefined' )
+            { console.error('setFocus: position undefined'); }
+        else
+        {
+            if ( typeof f['vx'] == 'undefined' )
+                { f['vx'] = 0; }
+            if ( typeof f['vy'] == 'undefined' )
+                { f['vy'] = 0; }
+
+            focus = f;
+            zoom = (typeof z!='undefined')?z:zoom;
+        }
     };
 }
