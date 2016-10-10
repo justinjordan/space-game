@@ -50,7 +50,7 @@ load_dependencies.load([
     'menustate.js',
     'pausestate.js',
     'playstate.js',
-    'entities/background.js',
+    'background.js',
     'entities/camera.js',
     'entities/ship.js',
     'entities/astronaut.js',

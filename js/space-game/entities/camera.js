@@ -82,4 +82,12 @@ function Camera(engine)
             zoom = (typeof z!='undefined')?z:zoom;
         }
     };
+
+    this.getVelocity = function()
+    {
+        return {
+            x: vx,
+            y: vy
+        };
+    };
 }

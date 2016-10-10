@@ -3,32 +3,38 @@ function PlayState(engine)
     var $this = this;
     this.engine = engine;
 
+    // Track entity IDs
+    var available_id = 0;
+    this.create_id = function()
+    {
+        return available_id++;
+    };
+
     // Setup View Objects
     this.camera = new Camera(engine);
 
     // Setup entities
-    this.background = new Background($this, this.camera.view);
-    this.ship = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height, true);
     this.ships = [];
-    //this.ships.push = new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height, true);
-    this.ships.push = new Ship($this, $this.camera.view, 0.75 * engine.renderer.view.width, 0.5 * engine.renderer.view.height);
-    this.astronaut = new Astronaut($this, $this.camera.view, this.ship);
     this.bullets = [];
+    // First Ship
+    this.ships.push(new Ship($this, $this.camera.view, 0.5 * engine.renderer.view.width, 0.5 * engine.renderer.view.height, true));
 
     this.init = function()
     {
-
         // Add background
+        this.background = new Background($this, this.camera.view);
         this.background.init();
 
-        // Setup ship
-        $this.ship.init();
-        // Setup astronaut
-        $this.astronaut.init();
-
         // Setup ships
+        for ( var i = 0; i < 10; i++ )
+            { this.ships.push(new Ship($this, $this.camera.view, Math.random() * engine.renderer.view.width, Math.random() * engine.renderer.view.height)); }
+        this.ship = this.ships[0];
         for ( var i in $this.ships )
             { $this.ships[i].init(); }
+
+        // Setup astronaut
+        this.astronaut = new Astronaut($this, $this.camera.view, this.ship);
+        $this.astronaut.init();
 
         // Add camera to stage
         engine.stage.addChild($this.camera.view);
@@ -47,48 +53,92 @@ function PlayState(engine)
             }
             if ( engine.keyboard.was_tapped('Digit6') )
             {
-                if ( $this.astronaut.control )
+                switch (true)
                 {
-                    for ( var i in $this.ships )
-                    {
+                    case $this.astronaut.control:
 
-                    }
+                        var dist;
+                        var close_dist = 50;
+                        var closest_ship;
+
+                        for ( var i in $this.ships )
+                        {
+                            dist = this.get_dist($this.ships[i], $this.astronaut);
+                            if ( dist < close_dist )
+                            {
+                                close_dist = dist;
+                                closest_ship = $this.ships[i];
+                            }
+                        }
+
+                        if (typeof closest_ship!='undefined')
+                        {
+                            $this.astronaut.control = false;
+                            $this.ship = closest_ship;
+                            $this.ship.control = true;
+                            $this.camera.setFocus($this.ship, 1);
+                        }
+
+                    break;
+
+                    default:
+                        $this.astronaut.x = $this.ship.x;
+                        $this.astronaut.y = $this.ship.y;
+                        $this.astronaut.vx = $this.ship.vx;
+                        $this.astronaut.vy = $this.ship.vy;
+                        $this.astronaut.rotation = $this.ship.rotation;
+                        $this.astronaut.control = true;
+                        $this.ship.control = false;
+                        $this.camera.setFocus($this.astronaut, 2);
                 }
-                /*
-                if ( $this.ship.control ) // In ship
-                {
-                    $this.astronaut.x = $this.ship.x;
-                    $this.astronaut.y = $this.ship.y;
-                    $this.camera.setFocus($this.astronaut, 2);
-                    $this.ship.control = false;
-                    $this.astronaut.control = true;
-                }
-                else if ( this.get_dist($this.ship, $this.astronaut) < 50 ) // Space walk
-                {
-                    $this.camera.setFocus($this.ship, 1);
-                    $this.astronaut.control = false;
-                    $this.ship.control = true;
-                }
-                */
             }
 
-            // Update entities
-            $this.ship.update(); // Ship
-            $this.astronaut.update(); // Astronaut
+            // UPDATE ASTRONAUT
+            $this.astronaut.update();
 
-            for ( var i in this.ships )
+            // UPDATE SHIPS
+            for (var i in this.ships)
             {
-                this.ships[i].update();
-            }
-            for ( var i in this.bullets ) // Bullets
-            {
-                if ( this.bullets[i].dead )
+                var ship = this.ships[i];
+                switch(true)
                 {
-                    this.bullets[i].cleanup();
-                    this.bullets.splice(i, 1);
+                    case ship.dead:
+                        ship.cleanup(function() {
+                            $this.ships.splice(i, 1); // remove element
+                        });
+                    break;
+                    default:
+                        ship.update();
                 }
-                else
-                    { this.bullets[i].update(); }
+            }
+
+            // UPDATE BULLETS
+            for (var i in this.bullets)
+            {
+                var bullet = this.bullets[i];
+                switch(true)
+                {
+                    case bullet.dead:
+                        bullet.cleanup(function() {
+                            $this.bullets.splice(i, 1); // remove element
+                        });
+                    break;
+                    default:
+                        bullet.update();
+
+                        // Test Collisions
+                        for (var j in this.ships)
+                        {
+                            var ship = this.ships[j];
+                            var dist = this.get_dist(bullet,ship);
+
+                            if (dist < 40 && ship.id!=bullet.parent.id)
+                            {
+                                ship.apply_damage(bullet.damage);
+                                bullet.dead = true;
+                            }
+                        }
+                }
             }
 
             // Update Background
@@ -122,14 +172,15 @@ function PlayState(engine)
     this.init();
 
 
-    /*********** PRIVATE ************/
     this.get_dist = function(ent1,ent2)
     {
         var xdiff = ent2.x - ent1.x;
         var ydiff = ent2.y - ent1.y;
 
         return Math.sqrt(xdiff*xdiff+ydiff*ydiff);
-    }
+    };
+
+
 
 
 

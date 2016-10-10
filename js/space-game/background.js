@@ -5,6 +5,8 @@ function Background(state, view)
     var sprites = [];
     var rect = {};
 
+    var container = new PIXI.Container();
+
     this.init = function()
     {
         // Setup sprites
@@ -16,16 +18,31 @@ function Background(state, view)
                 sprites[x][y] = new PIXI.Sprite(texture);
                 sprites[x][y].x = x * texture.width;
                 sprites[x][y].y = y * texture.height;
-                view.addChild(sprites[x][y]);
+                container.addChild(sprites[x][y]);
             }
         }
+
+        view.addChild(container);
     };
 
     this.update = function()
     {
         rect = get_rect();
         g_rect = global_rect();
+        position_tiles();
 
+        //reduce_motion();
+    };
+
+    /*var reduce_motion = function()
+    {
+        var cam_velocity = state.camera.getVelocity();
+        container.x += 0.8 * cam_velocity.x;
+        container.y += 0.8 * cam_velocity.y;
+    };*/
+
+    var position_tiles = function()
+    {
         var s_width = state.engine.renderer.view.width;
         var s_height = state.engine.renderer.view.height;
 

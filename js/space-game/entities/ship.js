@@ -1,7 +1,8 @@
 // Ship Object
-function Ship(state, view, x, y, control) {
+function Ship(state, view, x, y, control, health) {
     var $this = this;
 
+    this.id = state.create_id();
     this.control = (typeof control!='undefined')?control:false;
     this.x = x, this.y = y, this.rotation = -Math.PI/2;
     this.start_x = x;
@@ -15,10 +16,10 @@ function Ship(state, view, x, y, control) {
         normal: 'ship.png',
         thrust: 'ship_thrust.png'
     };
+    this.health = (typeof health!='undefined')?health:100;
+    this.dead = false;
 
     var bullet_speed = 20;
-
-
 
     this.init = function()
     {
@@ -67,6 +68,12 @@ function Ship(state, view, x, y, control) {
         this.sprite.rotation = this.rotation;
 
     };
+    this.cleanup = function(callback)
+    {
+        view.removeChild($this.sprite);
+        callback();
+    };
+
     this.accelerate = function()
     {
         this.vx += this.accel*Math.cos(this.sprite.rotation);
@@ -88,15 +95,32 @@ function Ship(state, view, x, y, control) {
         }
     };
 
+    this.apply_damage = function(d)
+    {
+        if (typeof d=='number')
+        {
+            this.health -= d;
+
+            if (this.health <= 0)
+                { die(); }
+        }
+    };
+
     var shoot = function()
     {
         state.bullets.push(new Bullet(
             state,
             view,
+            $this,
             $this.x + ($this.sprite.height/4) * Math.cos($this.rotation), // places bullet on nose of ship
             $this.y + ($this.sprite.height/4) * Math.sin($this.rotation), // places bullet on nose of ship
             $this.vx + bullet_speed*Math.cos($this.rotation),
             $this.vy + bullet_speed*Math.sin($this.rotation)
         ));
     };
+
+    var die = function()
+    {
+        $this.dead = true;
+    }
 }

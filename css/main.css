@@ -6,7 +6,7 @@ body, html
 
 body
 {
-    background-color: #333;
+    background-color: #000;
 }
 
 #game_container
@@ -15,4 +15,14 @@ body
     width: 100%;
     height: 100%;
     background-color: #222;
+}
+
+#spinner
+{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+    margin: 48vh 0;
+    color: #0b0;
 }
